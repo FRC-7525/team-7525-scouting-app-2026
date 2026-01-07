@@ -1,0 +1,54 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+default_platform(:ios)
+
+XCODEPROJ = "./ios/reefscapescouting.xcodeproj".freeze
+SIGH_ENV_PREFIX = "sigh_org.frcteam7525.reefscapescouting_appstore".freeze
+API_KEY_PATH = "authkey.json".freeze
+
+platform :ios do
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    setup_ci if ENV['CI']
+    match(type: "appstore")
+    update_code_signing_settings(
+      path: XCODEPROJ,
+      use_automatic_signing: false,
+      team_id: ENV["#{SIGH_ENV_PREFIX}_team-id"],
+      code_sign_identity: ENV["#{SIGH_ENV_PREFIX}_certificate-name"]
+    )
+    update_project_provisioning(
+      xcodeproj: XCODEPROJ,
+      profile: ENV["#{SIGH_ENV_PREFIX}_profile-path"],
+      build_configuration: "Release"
+    )
+    increment_build_number({
+      xcodeproj: XCODEPROJ,
+      build_number: latest_testflight_build_number(api_key_path: API_KEY_PATH) + 1
+    })
+    build_app(workspace: "./ios/reefscapescouting.xcworkspace", scheme: "reefscapescouting")
+    upload_to_testflight(
+      api_key_path: API_KEY_PATH,
+      skip_waiting_for_build_processing: true,
+      changelog: "Upload from GitHub Actions, ref #{ENV['GITHUB_REF']}, sha #{ENV['GITHUB_SHA']}, msg #{ENV['COMMIT_MSG']}"
+    )
+  end
+end
+
+platform :android do
+  desc "Build Android APK (currently not deployed)"
+  lane :beta do
+    setup_ci if ENV['CI']
+    gradle(task: "assembleRelease", project_dir: "./android")
+  end
+end
