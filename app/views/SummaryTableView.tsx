@@ -6,7 +6,7 @@ import TableRow from "../components/TableRow";
 
 function SummaryTableView() {
     return (
-        <ScrollView>
+        <View>
             <DataTable>
                 <TableHeader titles={[ "Auto Summary" ]} />
                 <TableRow label="Scouter" data={ getMatchData().then((data) => data["scouterName"]) } />
@@ -26,7 +26,7 @@ function SummaryTableView() {
                 <TableRow label="Climb Type" data={ getMatchData().then((data) => data["teleop"]["climb"].toString()) } />
             </DataTable>
 
-        </ScrollView>
+        </View>
     )
 }
 

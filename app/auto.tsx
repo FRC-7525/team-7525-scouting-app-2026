@@ -18,7 +18,6 @@ export default function App() {
             <PageHeader title='Auto' pageNumber='2/4' previous='' />
         
             <ScrollView>
-
             <AutoStartPositionView/>
             <CountBallsView phase ="autonomous" />
             <Divider />

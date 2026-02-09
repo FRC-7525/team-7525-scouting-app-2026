@@ -13,9 +13,6 @@ export default function App() {
         <View style={styles.container} onTouchStart={Keyboard.dismiss}>
             <PageHeader title='Teleop' pageNumber='3/4' previous="auto" />
             <ScrollView>
-
-            {/* <Stopwatch/>
-            <Divider /> */}
             
             <CountBallsView phase="teleop" />
             <Divider />
@@ -23,8 +20,8 @@ export default function App() {
             <Divider />
             <TeleopClimbView /> 
 
-            <StatusBar style="auto" />
             <NavButton pageName='summary' text='Next' />
+            <StatusBar style="auto" />
             </ScrollView>
         </View>
     );
