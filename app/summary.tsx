@@ -7,6 +7,7 @@ import SummaryTableView from './views/SummaryTableView';
 import Checkbox from './components/Checkbox';
 import NavButton from './components/NavButton';
 import { Divider } from 'react-native-paper';
+import Dropdown from './components/Dropdown'
 
 const { width } = Dimensions.get("window");
 
@@ -22,8 +23,14 @@ export default function App() {
                 }} oldValue={getMatchData().then((data) => data["notes"])} />
 
             <SummaryTableView />
+            
             <View style={styles.checkboxes}>
-                <Checkbox tag='Caught on fire'/>
+                <Checkbox tag='Can drive while shooting'/>
+                <Checkbox tag='Can pass over BUMP'/>
+                <Checkbox tag='Can pass under TRENCH'/>
+                <Checkbox tag='Can drive while shooting'/>
+                <Checkbox tag='Can pick up from DEPOT'/>
+                <Checkbox tag='Can feed OUTPOST'/>
                 <Checkbox tag='Stuck on gamepiece'/>
                 <Checkbox tag='Broke'/>
                 <Checkbox tag='Tipped over'/>

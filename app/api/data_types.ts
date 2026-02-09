@@ -29,16 +29,6 @@ export enum TELEOP_CLIMB_TYPE {
 class PhaseData {
 
     ballCount: number = 0;
-    // reef: {
-    //     L4: number,
-    //     L3: number,
-    //     L2: number,
-    //     L1: number,
-    // } = { L4: 0, L3: 0, L2: 0, L1: 0 };
-    // algae: {
-    //     net: number,
-    //     processor: number,
-    // } = { net: 0, processor: 0 };
 };
 
 export class AutoData extends PhaseData {
@@ -67,6 +57,4 @@ export class MatchData {
 }
 
 export type GamePhase = "teleop" | "autonomous";
-export type Tag = "Caught on fire" | "Stuck on gamepiece" | "Broke" | "Tipped over" | "Gamepiece stuck" | "Climb failure";
-// export type ReefLevel = "L4" | "L3" | "L2" | "L1";
-// export type AlgaeLevel = "net" | "processor";
+export type Tag = "Can drive while shooting" |"Can pass over BUMP" | "Can pass under TRENCH"|"Can pick up from DEPOT"|"Can feed OUTPOST"|"Stuck on gamepiece" | "Broke" | "Tipped over" | "Gamepiece stuck" | "Climb failure";
