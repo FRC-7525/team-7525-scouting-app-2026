@@ -1,0 +1,70 @@
+name: Deploy
+
+on:
+  - push
+
+
+jobs:
+  ios:
+    runs-on: macos-14
+    concurrency:
+      group: "ios"
+      cancel-in-progress: true
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20.x"
+        cache: "npm"
+    - run: npm ci
+    - name: Prebuild
+      run: |
+        echo EXPO_PUBLIC_SHA=${{ github.sha }} >> .env
+        npx expo prebuild
+    - uses: irgaly/xcode-cache@v1
+      with:
+        key: xcode-cache-deriveddata-${{ github.workflow }}-${{ github.sha }}
+        restore-keys: xcode-cache-deriveddata-${{ github.workflow }}-
+    - name: Deploy to TestFlight
+      run: |
+        brew install fastlane
+        echo "$APP_STORE_CONNECT_KEY" > authkey.json
+        fastlane beta
+      env:
+        FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+        APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
+        COMMIT_MSG: ${{ github.event.commits[0].message }}
+  android:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: "android"
+      cancel-in-progress: true
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20.x"
+        cache: "npm"
+    - run: npm ci
+    - name: Prebuild
+      run: npx expo prebuild
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'corretto'
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+    - name: Build (not currently deployed)
+      run: |
+        sudo gem install fastlane
+        fastlane android beta
+    - name: Send to Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: outputs
+        path: android/app/build/outputs
