@@ -25,7 +25,7 @@ function RadioButton({ data, onSelect, oldSelected, defaultValue }: RadioButton)
 
     const onOptionSelect = (option: string) => {
         setSelectedOption(option);
-        onSelect(option);
+        onSelect?.(option);
     }
 
     return (

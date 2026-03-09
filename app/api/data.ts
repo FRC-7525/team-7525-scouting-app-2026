@@ -1,4 +1,4 @@
-import { AlgaeLevel, CLIMB_TYPE, DRIVER_STATION, GamePhase, MatchData, ReefLevel, START_POSITION, Tag } from "./data_types";
+import { AUTO_CLIMB_TYPE, TELEOP_CLIMB_TYPE, DRIVER_STATION, GamePhase, MatchData, START_POSITION, Tag } from "./data_types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function getMatchData(): Promise<MatchData> {
@@ -59,9 +59,9 @@ export function updateDriverStation(station: DRIVER_STATION): Promise<void> {
     });
 }
 
-export function updateReefScores(phase: GamePhase, level: ReefLevel, score: number): Promise<void> {
+export function updateBallCount(phase: GamePhase, ballCount: number): Promise<void> {
     return modifyMatchData((data) => {
-        data[phase]["reef"][level] = score;
+        data[phase].ballCount = ballCount;
         return data;
     });
 }
@@ -80,14 +80,14 @@ export function updateStartPosition(position: START_POSITION): Promise<void> {
     });
 }
 
-export function updateAlgaeScore(phase: GamePhase, location: AlgaeLevel, score: number): Promise<void> {
+export function updateAutoClimb(climbType: AUTO_CLIMB_TYPE): Promise<void> {
     return modifyMatchData((data) => {
-        data[phase]["algae"][location] = score;
+        data["autonomous"]["climb"] = climbType;
         return data;
     });
 }
 
-export function updateClimb(climbType: CLIMB_TYPE): Promise<void> {
+export function updateTeleopClimb(climbType: TELEOP_CLIMB_TYPE): Promise<void> {
     return modifyMatchData((data) => {
         data["teleop"]["climb"] = climbType;
         return data;
@@ -130,6 +130,20 @@ export function updateTags(tag: Tag, removeTag?: boolean): Promise<void> {
 export function updateDefenseTime(time: number): Promise<void> {
     return modifyMatchData((data) => {
         data["teleop"]["defenseTime"] = time;
+        return data;
+    });
+}
+
+export function updateAutoShuttlingTime(phase: GamePhase, time: number): Promise<void> {
+    return modifyMatchData((data) => {
+        data["autonomous"]["AutoshuttlingTime"] = time;
+        return data;
+    });
+}
+
+export function updateTeleopShuttlingTime(phase: GamePhase, time: number): Promise<void> {
+    return modifyMatchData((data) => {
+        data["teleop"]["TeleopshuttlingTime"] = time;
         return data;
     });
 }

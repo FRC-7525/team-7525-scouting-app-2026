@@ -6,21 +6,22 @@ import { BACKGROUND_COLOR, TEXT_COLOR } from "../consts";
 interface MathButtonProps {
     operation: "+" | "-";
     count: number;
+    step: number,
     setCount: (newCount: number) => void;
     min?: number;
     max?: number;
 };
 
-function MathButton({ operation, count, setCount, min, max }: MathButtonProps) {
+function MathButton({ operation, count, setCount, step, min, max }: MathButtonProps) {
     const handlePress = () => {
         if (operation == "-") {
-            setCount(count - 1);
+            setCount(count - step);
 
             if (min !== undefined && count <= min) {
                 setCount(min);
             }
         } else {
-            setCount(count + 1);
+            setCount(count + step);
 
             if (max !== undefined && count >= max) {
                 setCount(max);
