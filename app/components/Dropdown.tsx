@@ -25,7 +25,7 @@ function Dropdown({ label, items, placeholder, onChange }: DropdownProps) {
             <SelectDropdown
                 data={items}
                 onSelect={(selected: string) => {
-                    onChange(selected);
+                    onChange?.(selected);
                 }}
 
                 renderButton={(selectedItem, _isOpened) => {

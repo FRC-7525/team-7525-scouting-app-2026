@@ -6,39 +6,42 @@ import { Chip } from "react-native-paper";
 interface MathBlockProps {
     min?: number;
     max?: number;
+    step: number;
     label?: string;
     showNumber?: boolean;
     onPress?: (count: number) => void;
     oldCount?: Promise<number>;
-};
+}
 
-function MathBlock({ min, max, label, showNumber, onPress, oldCount }: MathBlockProps) {
-    label = (label !== undefined) ? label + " " : "";
+function MathBlock({ min, max, step, label, showNumber, onPress, oldCount }: MathBlockProps) {
+    label = label !== undefined ? label + " " : "";
     onPress ??= () => {};
     showNumber ??= true;
-    const [ count, setCount ] = useState(0);
+
+    const [count, setCount] = useState(0);
 
     useEffect(() => {
         const getOldCount = async () => {
-            setCount(await oldCount ?? 0);
-        }
-
+            const resolved = oldCount ? await oldCount : 0;
+            setCount(resolved);
+        };
         getOldCount();
     }, []);
 
     const mathButtonOnPress = (newCount: number) => {
-        setCount(newCount)
-        onPress(newCount);
-    }
+        setCount(newCount);
+        onPress?.(newCount);
+
+    };
 
     return (
         <View style={styles.container}>
-            <MathButton operation="-" count={count} setCount={mathButtonOnPress} min={min} />
-            <Text style={styles.text}>{ label }</Text>
-            { showNumber && <Chip style={styles.chip}>{count}</Chip> }
-            <MathButton operation="+" count={count} setCount={mathButtonOnPress} max={max} />
+            <MathButton operation="-" count={count} step={step} setCount={mathButtonOnPress} min={min}/>
+            <Text style={styles.text}>{label}</Text>
+            {showNumber && <Chip style={styles.chip}>{count}</Chip>}
+            <MathButton operation="+"count={count} step={step} setCount={mathButtonOnPress} max={max}/>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -50,10 +53,9 @@ const styles = StyleSheet.create({
     },
     text: {
         flex: 3,
-        textAlign: "center",
+        textAlign: "center"
     },
-    chip: {
-    }
-})
+    chip: {}
+});
 
 export default MathBlock;

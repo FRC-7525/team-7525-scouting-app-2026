@@ -22,7 +22,7 @@ function Switch({ label, onToggle, oldValue }: SwitchProps) {
     }, []);
     
     const onSwitchChange = () => {
-        onToggle(!switchState);
+        onToggle?.(!switchState);
         setSwitchState(!switchState);
     }
 
