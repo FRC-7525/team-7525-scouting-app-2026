@@ -36,7 +36,7 @@ platform :ios do
       xcodeproj: XCODEPROJ,
       build_number: latest_testflight_build_number(api_key_path: API_KEY_PATH) + 1
     })
-    build_app(workspace: "./ios/reefscapescouting.xcworkspace", scheme: "reefscapescouting")
+    build_app(workspace: "./ios/rebuiltscouting.xcworkspace", scheme: "rebuiltscouting")
     upload_to_testflight(
       api_key_path: API_KEY_PATH,
       skip_waiting_for_build_processing: true,
