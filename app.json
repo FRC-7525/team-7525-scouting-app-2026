@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "reefscape-scouting",
-    "slug": "reefscape-scouting",
+    "name": "rebuilt-scouting",
+    "slug": "rebuilt-scouting",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -9,7 +9,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "org.frcteam7525.reefscapescouting",
+      "bundleIdentifier": "org.frcteam7525.rebuiltscouting",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -19,7 +19,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1A1A1A"
       },
-      "package": "org.frcteam7525.reefscapescouting"
+      "package": "org.frcteam7525.rebuiltscouting"
     },
     "web": {
       "favicon": "./assets/favicon.png",

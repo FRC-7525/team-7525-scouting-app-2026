@@ -1,4 +1,4 @@
-app_identifier("org.frcteam7525.reefscapescouting") # The bundle identifier of your app
+app_identifier("org.frcteam7525.rebuiltscouting") # The bundle identifier of your app
 apple_id("avishkank@icloud.com") # Your Apple Developer Portal username
 
 itc_team_id("119038746") # App Store Connect Team ID

@@ -12,8 +12,8 @@
 
 default_platform(:ios)
 
-XCODEPROJ = "./ios/reefscapescouting.xcodeproj".freeze
-SIGH_ENV_PREFIX = "sigh_org.frcteam7525.reefscapescouting_appstore".freeze
+XCODEPROJ = "./ios/rebuiltscouting.xcodeproj".freeze
+SIGH_ENV_PREFIX = "sigh_org.frcteam7525.rebuiltscouting_appstore".freeze
 API_KEY_PATH = "authkey.json".freeze
 
 platform :ios do
