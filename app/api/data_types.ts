@@ -27,7 +27,8 @@ export enum TELEOP_CLIMB_TYPE {
 };
 
 class PhaseData {
-
+    crossLineTags: CrossLineTag[] = [];
+    intakeTags: IntakeLocationTag[] = [];
     ballCount: number = 0;
 };
 
@@ -53,8 +54,36 @@ export class MatchData {
     autonomous: AutoData = new AutoData();
     teleop: TeleopData = new TeleopData();
     notes: string = "";
-    tags: Tag[] = [];
+
+    errorTags: ErrorTag[] = [];
+    capabilityTags: CapabilityTag[] = [];
 }
 
 export type GamePhase = "teleop" | "autonomous";
-export type Tag = "Can drive while shooting" |"Can pass over BUMP" | "Can pass under TRENCH"|"Can pick up from DEPOT"|"Can feed OUTPOST"|"Stuck on gamepiece" | "Broke" | "Tipped over" | "Gamepiece stuck" | "Climb failure";
+
+export type ErrorTag =
+  | "Stuck on gamepiece"
+  | "Broke"
+  | "Tipped over"
+  | "Gamepiece stuck"
+  | "Climb failure";
+
+export type CrossLineTag =
+  | "BUMP"
+  | "TRENCH";
+
+export type IntakeLocationTag =
+  | "Depot"
+  | "Outpost"
+  | "Center zone"
+
+export type CapabilityTag =
+  | "Can drive while shooting";
+
+export type Tag =
+  | ErrorTag
+  | CrossLineTag
+  | IntakeLocationTag
+  | CapabilityTag;
+
+

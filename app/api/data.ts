@@ -1,4 +1,4 @@
-import { AUTO_CLIMB_TYPE, TELEOP_CLIMB_TYPE, DRIVER_STATION, GamePhase, MatchData, START_POSITION, Tag } from "./data_types";
+import { AUTO_CLIMB_TYPE, TELEOP_CLIMB_TYPE, DRIVER_STATION, GamePhase, MatchData, START_POSITION, Tag, CrossLineTag, IntakeLocationTag, CapabilityTag, ErrorTag } from "./data_types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function getMatchData(): Promise<MatchData> {
@@ -112,17 +112,50 @@ export function addUnsyncedData(data: MatchData): Promise<void> {
     })
 }
 
-export function updateTags(tag: Tag, removeTag?: boolean): Promise<void> {
+export function updateErrorTag(tag: ErrorTag, remove?: boolean): Promise<void> {
     return modifyMatchData((data) => {
-        const tags = new Set(data["tags"]);
+        const tags = new Set(data.errorTags);
 
-        if (removeTag) {
-            tags.delete(tag);
-        } else {
-            tags.add(tag);
-        }
+        if (remove) tags.delete(tag);
+        else tags.add(tag);
 
-        data["tags"] = [...tags];
+        data.errorTags = [...tags];
+        return data;
+    });
+}
+
+export function updateCrossLineTag(tag: CrossLineTag, remove?: boolean, phase: GamePhase = "autonomous"): Promise<void> {
+    return modifyMatchData((data) => {
+        const tags = new Set(data[phase].crossLineTags);
+
+        if (remove) tags.delete(tag);
+        else tags.add(tag);
+
+        data[phase].crossLineTags = [...tags];
+        return data;
+    });
+}
+
+export function updateIntakeLocationTag(tag: IntakeLocationTag, remove?: boolean, phase: GamePhase = "autonomous"): Promise<void> {
+    return modifyMatchData((data) => {
+        const tags = new Set(data[phase].intakeTags);
+
+        if (remove) tags.delete(tag);
+        else tags.add(tag);
+
+        data[phase].intakeTags = [...tags];
+        return data;
+    });
+}
+
+export function updateCapabilityTag(tag: CapabilityTag, remove?: boolean): Promise<void> {
+    return modifyMatchData((data) => {
+        const tags = new Set(data.capabilityTags);
+
+        if (remove) tags.delete(tag);
+        else tags.add(tag);
+
+        data.capabilityTags = [...tags];
         return data;
     });
 }

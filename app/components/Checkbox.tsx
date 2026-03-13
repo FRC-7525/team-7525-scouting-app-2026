@@ -1,38 +1,39 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { Checkbox as PaperCheckbox } from 'react-native-paper';
 import { View, Text } from 'react-native';
 import { BACKGROUND_COLOR } from '../consts';
-import { Tag } from '../api/data_types';
-import { getMatchData, updateTags } from '../api/data';
+import { getMatchData } from '../api/data';
+import { MatchData } from '../api/data_types';
 
 interface CheckboxProps {
-  tag: Tag;
+  label: string;
+  getChecked: (data: MatchData) => boolean;
+  update: (remove: boolean) => Promise<void>;
 }
 
-function Checkbox({ tag }: CheckboxProps) {
+function Checkbox({ label, getChecked, update }: CheckboxProps) {
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     getMatchData().then((data) => {
-      setChecked(data["tags"].includes(tag));
+      setChecked(getChecked(data));
     });
   }, []);
 
   return (
-    <View style={[{ flexDirection: "row", alignItems: "center" }]}>
-
-    <PaperCheckbox.Android
-      color={BACKGROUND_COLOR}
-      status={checked ? 'checked' : 'unchecked'}
-      onPress={() => {
-        updateTags(tag, checked);
-        setChecked(!checked);
-      }}
-    />
-    <Text>{tag}</Text>
-
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <PaperCheckbox.Android
+        color={BACKGROUND_COLOR}
+        status={checked ? 'checked' : 'unchecked'}
+        onPress={() => {
+          const newState = !checked;
+          setChecked(newState);
+          update(!newState);
+        }}
+      />
+      <Text>{label}</Text>
     </View>
-  )
+  );
 }
 
 export default Checkbox;
