@@ -35,12 +35,12 @@ class PhaseData {
 export class AutoData extends PhaseData {
     leftStart: boolean = false;
     startPosition: START_POSITION = START_POSITION.SCORING_TABLE;
-    climb: AUTO_CLIMB_TYPE = AUTO_CLIMB_TYPE.L1;
+    climb: AUTO_CLIMB_TYPE = AUTO_CLIMB_TYPE.NO_CLIMB;
     AutoshuttlingTime: number = 0;
 }
 
 export class TeleopData extends PhaseData {
-    climb: TELEOP_CLIMB_TYPE = TELEOP_CLIMB_TYPE.L1;
+    climb: TELEOP_CLIMB_TYPE = TELEOP_CLIMB_TYPE.NO_CLIMB;
     defenseTime: number = 0;
     TeleopshuttlingTime:number = 0;
 }
