@@ -8,6 +8,7 @@ import ReefAlgaeView from './views/AutoShuttleTimerView';
 import AutoStartPositionView from './views/AutoStartPositionView'
 import AutoClimbView from './views/AutoClimbView';
 import AutoShuttleTimerView from './views/AutoShuttleTimerView';
+import IntakeLocationsView from './views/IntakeLocationsView';
 import React from 'react';
 import CountBallsView from './views/CountBallsView';
 
@@ -19,6 +20,7 @@ export default function App() {
         
             <ScrollView>
             <AutoStartPositionView/>
+            <IntakeLocationsView phase = "autonomous" />
             <CountBallsView phase ="autonomous" />
             <Divider />
             <AutoShuttleTimerView />

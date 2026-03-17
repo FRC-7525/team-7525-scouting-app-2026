@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { Dimensions, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import LabeledTextInput from './components/LabeledTextInput';
-import { addUnsyncedData, deleteMatchData, getMatchData, updateNotes } from './api/data';
+import { addUnsyncedData, deleteMatchData, getMatchData, updateNotes, updateCapabilityTag, updateErrorTag } from './api/data';
 import PageHeader from './components/Header';
 import SummaryTableView from './views/SummaryTableView';
 import Checkbox from './components/Checkbox';
@@ -25,17 +25,12 @@ export default function App() {
             <SummaryTableView />
             
             <View style={styles.checkboxes}>
-                <Checkbox tag='Can drive while shooting'/>
-                <Checkbox tag='Can pass over BUMP'/>
-                <Checkbox tag='Can pass under TRENCH'/>
-                <Checkbox tag='Can drive while shooting'/>
-                <Checkbox tag='Can pick up from DEPOT'/>
-                <Checkbox tag='Can feed OUTPOST'/>
-                <Checkbox tag='Stuck on gamepiece'/>
-                <Checkbox tag='Broke'/>
-                <Checkbox tag='Tipped over'/>
-                <Checkbox tag='Gamepiece stuck'/>
-                <Checkbox tag='Climb failure'/>
+                <Checkbox label="Climb failure" getChecked={(data) => data.errorTags.includes("Climb failure")} update={(remove) => updateErrorTag("Climb failure", remove)} />
+                <Checkbox label="Gamepiece stuck" getChecked={(data) => data.errorTags.includes("Gamepiece stuck")} update={(remove) => updateErrorTag("Gamepiece stuck", remove)} />
+                <Checkbox label="Tipped over" getChecked={(data) => data.errorTags.includes("Tipped over")} update={(remove) => updateErrorTag("Tipped over", remove)} />
+                <Checkbox label="Broke" getChecked={(data) => data.errorTags.includes("Broke")} update={(remove) => updateErrorTag("Broke", remove)} />
+                <Checkbox label="Stuck on gamepiece" getChecked={(data) => data.errorTags.includes("Stuck on gamepiece")} update={(remove) => updateErrorTag("Stuck on gamepiece", remove)} />
+                <Checkbox label="Can drive while shooting" getChecked={(data) => data.capabilityTags.includes("Can drive while shooting")} update={(remove) => updateCapabilityTag("Can drive while shooting", remove)} />
             </View>
             <NavButton text="End" pageName='submit'/>
 
