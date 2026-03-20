@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
 import MathButton from "./MathButton";
-import { useEffect, useState } from "react";
 import { Chip } from "react-native-paper";
 
 interface MathBlockProps {
@@ -9,37 +8,19 @@ interface MathBlockProps {
     step: number;
     label?: string;
     showNumber?: boolean;
-    onPress?: (count: number) => void;
-    oldCount?: Promise<number>;
+    onPress: (count: number) => void;
+    count: number;
 }
 
-function MathBlock({ min, max, step, label, showNumber, onPress, oldCount }: MathBlockProps) {
-    label = label !== undefined ? label + " " : "";
-    onPress ??= () => {};
-    showNumber ??= true;
-
-    const [count, setCount] = useState(0);
-
-    useEffect(() => {
-        const getOldCount = async () => {
-            const resolved = oldCount ? await oldCount : 0;
-            setCount(resolved);
-        };
-        getOldCount();
-    }, []);
-
-    const mathButtonOnPress = (newCount: number) => {
-        setCount(newCount);
-        onPress?.(newCount);
-
-    };
+function MathBlock({ min, max, step, label, showNumber = true, onPress, count }: MathBlockProps) {
+    const displayLabel = label !== undefined ? label + " " : "";
 
     return (
         <View style={styles.container}>
-            <MathButton operation="-" count={count} step={step} setCount={mathButtonOnPress} min={min}/>
-            <Text style={styles.text}>{label}</Text>
+            <MathButton operation="-" count={count} step={step} setCount={onPress} min={min} />
+            <Text style={styles.text}>{displayLabel}</Text>
             {showNumber && <Chip style={styles.chip}>{count}</Chip>}
-            <MathButton operation="+"count={count} step={step} setCount={mathButtonOnPress} max={max}/>
+            <MathButton operation="+" count={count} step={step} setCount={onPress} max={max} />
         </View>
     );
 }

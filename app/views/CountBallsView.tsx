@@ -12,30 +12,39 @@ interface CountBallsViewProps {
 function CountBallsView({ phase }: CountBallsViewProps) {
     const [tensCount, setTensCount] = useState(0);
     const [onesCount, setOnesCount] = useState(0);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
+        let isMounted = true;
         const loadInitial = async () => {
+            setIsLoaded(false);
             const data = await getMatchData();
-            const total = data[phase].ballCount ?? 0;
+            const total = data[phase]?.ballCount ?? 0;
 
-            setTensCount(Math.floor(total / 10) * 10);
-            setOnesCount(total % 10);
+            if (isMounted) {
+                setTensCount(Math.floor(total / 10) * 10);
+                setOnesCount(total % 10);
+                setIsLoaded(true);
+            }
         };
 
         loadInitial();
+        return () => { isMounted = false; };
     }, [phase]);
 
     useEffect(() => {
+        if (!isLoaded) return;
+
         const total = tensCount + onesCount;
         updateBallCount(phase, total);
-    }, [tensCount, onesCount, phase]);
+    }, [tensCount, onesCount, phase, isLoaded]);
 
     return (
         <View style={styles.container}>
             <SectionTitle>Fuel count</SectionTitle>
 
-            <MathBlock step={10} label="10 Fuel" min={0} oldCount={Promise.resolve(tensCount)} onPress={setTensCount} />
-            <MathBlock step={1} label="1 Fuel" min={0} oldCount={Promise.resolve(onesCount)} onPress={setOnesCount} />
+            <MathBlock step={10} label="10 Fuel" min={0} count={tensCount} onPress={setTensCount} />
+            <MathBlock step={1} label="1 Fuel" min={0} count={onesCount} onPress={setOnesCount} />
         </View>
     );
 }
