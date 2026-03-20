@@ -7,21 +7,32 @@ import Stopwatch from './components/Timer';
 import { Divider } from 'react-native-paper';
 import TeleopTimerView from './views/TeleopTimerView';
 import TeleopClimbView from './views/TeleopClimbView';
+import { useState } from 'react';
 
 export default function App() {
+    const [timersActive, setTimersActive] = useState(false);
+
+    const handleNext = () => {
+        setTimersActive(false);
+    };
+
     return (
         <View style={styles.container} onTouchStart={Keyboard.dismiss}>
             <PageHeader title='Teleop' pageNumber='3/4' previous="auto" />
             <ScrollView>
-            
-            <CountBallsView phase="teleop" />
-            <Divider />
-            <TeleopTimerView />
-            <Divider />
-            <TeleopClimbView /> 
+                <CountBallsView phase="teleop" />              
+                <Divider />
+                <TeleopTimerView 
+                    shuttleRunning={timersActive} 
+                    setShuttleRunning={setTimersActive} 
+                    defenseRunning={false}
+                    setDefenseRunning={() => {}}
+                />
+                <Divider />
+                <TeleopClimbView />
 
-            <NavButton pageName='summary' text='Next' />
-            <StatusBar style="auto" />
+                <NavButton pageName='summary' text='Next' onClick={handleNext} />
+                <StatusBar style="auto" />
             </ScrollView>
         </View>
     );

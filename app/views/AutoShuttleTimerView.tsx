@@ -1,28 +1,46 @@
 import { getMatchData, updateAutoShuttlingTime } from "../api/data";
 import { View, StyleSheet } from "react-native";
 import SectionTitle from "../components/SectionTitle";
-import { GamePhase } from "../api/data_types";
 import UniversalTimer from "../components/UniversalTimer";
 import { useEffect, useState } from "react";
 
-function AutoShuttleTimerView() {
-  const [time, setTime] = useState(0);
+interface AutoShuttleTimerViewProps {
+  isRunning: boolean;
+  setIsRunning: (running: boolean) => void;
+}
+
+function AutoShuttleTimerView({ isRunning, setIsRunning }: AutoShuttleTimerViewProps) {
+  const [initialTime, setInitialTime] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    getMatchData().then((data) => {
-      setTime(data["autonomous"]?.AutoshuttlingTime ?? 0);
-    });
-  }, ["autonomous"]);
+    let isMounted = true;
+    const loadData = async () => {
+      const data = await getMatchData();
+      const savedTime = data["autonomous"]?.AutoshuttlingTime ?? 0;
+      
+      if (isMounted) {
+        setInitialTime(savedTime);
+        setIsLoaded(true);
+      }
+    };
+    loadData();
+    return () => { isMounted = false; };
+  }, []);
 
   return (
     <View style={styles.container}>
       <SectionTitle>Shuttling Timer</SectionTitle>
-      <UniversalTimer
-        initialTime={time}
-        onStop={(finalTime) => {
-          updateAutoShuttlingTime("autonomous", finalTime);
-        }}
-      />
+      {isLoaded && (
+        <UniversalTimer
+          initialTime={initialTime}
+          isRunning={isRunning}
+          setIsRunning={setIsRunning}
+          onStop={(finalTime) => {
+            updateAutoShuttlingTime("autonomous", finalTime);
+          }}
+        />
+      )}
     </View>
   );
 }

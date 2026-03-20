@@ -9,10 +9,15 @@ import AutoStartPositionView from './views/AutoStartPositionView'
 import AutoClimbView from './views/AutoClimbView';
 import AutoShuttleTimerView from './views/AutoShuttleTimerView';
 import IntakeLocationsView from './views/IntakeLocationsView';
-import React from 'react';
+import React, { useState } from 'react';
 import CountBallsView from './views/CountBallsView';
 
 export default function App() {
+    const [timersActive, setTimersActive] = useState(false);
+    
+    const handleNext = () => {
+        setTimersActive(false);
+    };
     return (
         <View style={styles.container}>
              
@@ -23,10 +28,10 @@ export default function App() {
             <IntakeLocationsView phase = "autonomous" />
             <CountBallsView phase ="autonomous" />
             <Divider />
-            <AutoShuttleTimerView />
+            <AutoShuttleTimerView isRunning={timersActive} setIsRunning={setTimersActive}/>
             <Divider />
             <AutoClimbView />
-            <NavButton text="Next" pageName="teleop" />
+            <NavButton text="Next" pageName="teleop" onClick={handleNext} />
             <StatusBar style="auto" />
             </ScrollView>
         </View>
