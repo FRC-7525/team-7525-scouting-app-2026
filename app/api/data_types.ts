@@ -66,7 +66,8 @@ export type ErrorTag =
   | "Broke"
   | "Tipped over"
   | "Gamepiece stuck"
-  | "Climb failure";
+  | "Climb failure"
+  | "Foul";
 
 export type CrossLineTag =
   | "BUMP"
@@ -78,7 +79,10 @@ export type IntakeLocationTag =
   | "Center zone"
 
 export type CapabilityTag =
-  | "Can drive while shooting";
+  | "Can drive while shooting"
+  | "Can get unstuck on gamepiece"
+  |"Can go over BUMP"
+  |"Can go under TRENCH";
 
 export type Tag =
   | ErrorTag
