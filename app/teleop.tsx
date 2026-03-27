@@ -10,10 +10,12 @@ import TeleopClimbView from './views/TeleopClimbView';
 import { useState } from 'react';
 
 export default function App() {
-    const [timersActive, setTimersActive] = useState(false);
+    const [shuttleActive, setShuttleActive] = useState(false);
+    const [defenseActive, setDefenseActive] = useState(false);
 
     const handleNext = () => {
-        setTimersActive(false);
+        setShuttleActive(false);
+        setDefenseActive(false);
     };
 
     return (
@@ -23,10 +25,10 @@ export default function App() {
                 <CountBallsView phase="teleop" />              
                 <Divider />
                 <TeleopTimerView 
-                    shuttleRunning={timersActive} 
-                    setShuttleRunning={setTimersActive} 
-                    defenseRunning={false}
-                    setDefenseRunning={() => {}}
+                    shuttleRunning={shuttleActive} 
+                    setShuttleRunning={setShuttleActive} 
+                    defenseRunning={defenseActive}
+                    setDefenseRunning={setDefenseActive}
                 />
                 <Divider />
                 <TeleopClimbView />
