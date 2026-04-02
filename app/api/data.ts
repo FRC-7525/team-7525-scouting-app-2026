@@ -59,9 +59,23 @@ export function updateDriverStation(station: DRIVER_STATION): Promise<void> {
     });
 }
 
-export function updateBallCount(phase: GamePhase, ballCount: number): Promise<void> {
+// export function updateBallCount(phase: GamePhase, ballCount: number): Promise<void> {
+//     return modifyMatchData((data) => {
+//         data[phase].ballCount = ballCount;
+//         return data;
+//     });
+// }
+
+export function updateDriverCitrusScale(scale: number): Promise<void> {
     return modifyMatchData((data) => {
-        data[phase].ballCount = ballCount;
+        data["teleop"]["driverCitrusScale"] = scale;
+        return data;
+    });
+}
+
+export function updateDefenseAbility(ability: number): Promise<void> {
+    return modifyMatchData((data) => {
+        data["teleop"]["defenseAbility"] = ability;
         return data;
     });
 }

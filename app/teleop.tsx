@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import NavButton from './components/NavButton';
 import PageHeader from './components/Header';
-import CountBallsView from './views/CountBallsView';
+// import CountBallsView from './views/CountBallsView';
 import Stopwatch from './components/Timer';
 import { Divider } from 'react-native-paper';
 import TeleopTimerView from './views/TeleopTimerView';
@@ -22,8 +22,8 @@ export default function App() {
         <View style={styles.container} onTouchStart={Keyboard.dismiss}>
             <PageHeader title='Teleop' pageNumber='3/4' previous="auto" />
             <ScrollView>
-                <CountBallsView phase="teleop" />              
-                <Divider />
+                {/* <CountBallsView phase="teleop" />        */}
+                {/* <Divider /> */}
                 <TeleopTimerView 
                     shuttleRunning={shuttleActive} 
                     setShuttleRunning={setShuttleActive} 

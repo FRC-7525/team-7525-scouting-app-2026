@@ -10,7 +10,7 @@ import AutoClimbView from './views/AutoClimbView';
 import AutoShuttleTimerView from './views/AutoShuttleTimerView';
 import IntakeLocationsView from './views/IntakeLocationsView';
 import React, { useState } from 'react';
-import CountBallsView from './views/CountBallsView';
+// import CountBallsView from './views/CountBallsView';
 
 export default function App() {
     const [timersActive, setTimersActive] = useState(false);
@@ -26,8 +26,8 @@ export default function App() {
             <ScrollView>
             <AutoStartPositionView/>
             <IntakeLocationsView phase = "autonomous" />
-            <CountBallsView phase ="autonomous" />
-            <Divider />
+            {/* <CountBallsView phase ="autonomous" />
+            <Divider /> */}
             <AutoShuttleTimerView isRunning={timersActive} setIsRunning={setTimersActive}/>
             <Divider />
             <AutoClimbView />

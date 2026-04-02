@@ -29,7 +29,7 @@ export enum TELEOP_CLIMB_TYPE {
 class PhaseData {
     crossLineTags: CrossLineTag[] = [];
     intakeTags: IntakeLocationTag[] = [];
-    ballCount: number = 0;
+    // ballCount: number = 0;
 };
 
 export class AutoData extends PhaseData {
@@ -43,6 +43,8 @@ export class TeleopData extends PhaseData {
     climb: TELEOP_CLIMB_TYPE = TELEOP_CLIMB_TYPE.NO_CLIMB;
     defenseTime: number = 0;
     TeleopshuttlingTime:number = 0;
+    driverCitrusScale: number = 0;
+    defenseAbility: number = 0;
 }
 
 export class MatchData {
