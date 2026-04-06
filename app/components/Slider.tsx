@@ -8,6 +8,7 @@ interface SliderProps {
   step: number;
   onValueChange: (value: number) => void;
   oldValue: Promise<number>;
+  label?: string;
 }
 
 export default function Slider({
@@ -28,17 +29,18 @@ export default function Slider({
   return (
     <View style={styles.container}>
       <Text style={styles.value}>{value}</Text>
-
       <SliderNative
         minimumValue={min}
         maximumValue={max}
         step={step}
-        value={value}
+        value={value} 
         onValueChange={(v: number) => {
           setValue(v);
+        }}
+        onSlidingComplete={(v: number) => {
           onValueChange(v);
         }}
-        minimumTrackTintColor="#d9a1ff" //pretty purple color :D
+        minimumTrackTintColor="#d9a1ff"
         maximumTrackTintColor="#5f3274"
         thumbTintColor="#000000"
       />
@@ -46,14 +48,16 @@ export default function Slider({
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
-    rowGap: 6
+    rowGap: 6,
   },
   value: {
     color: "#ffffff",
     fontSize: 14,
     fontWeight: "500",
-    alignSelf: "flex-end"
+    alignSelf: "flex-end",
+
   }
 });

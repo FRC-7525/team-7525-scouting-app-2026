@@ -7,6 +7,7 @@ import Stopwatch from './components/Timer';
 import { Divider } from 'react-native-paper';
 import TeleopTimerView from './views/TeleopTimerView';
 import TeleopClimbView from './views/TeleopClimbView';
+import SuperScoutView from './views/SuperScoutView';
 import { useState } from 'react';
 
 export default function App() {
@@ -24,6 +25,8 @@ export default function App() {
             <ScrollView>
                 {/* <CountBallsView phase="teleop" />        */}
                 {/* <Divider /> */}
+                <SuperScoutView />
+                <Divider />
                 <TeleopTimerView 
                     shuttleRunning={shuttleActive} 
                     setShuttleRunning={setShuttleActive} 
