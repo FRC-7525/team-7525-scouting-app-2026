@@ -18,26 +18,33 @@ export default function Slider({
   onValueChange,
   oldValue
 }: SliderProps) {
-  const [value, setValue] = useState(min);
+  const [displayValue, setDisplayValue] = useState(min);
+  const [initialValue, setInitialValue] = useState<number | null>(null);
 
   useEffect(() => {
     oldValue.then(v => {
-      if (typeof v === "number") setValue(v);
+      if (typeof v === "number") {
+        setDisplayValue(v);
+        setInitialValue(v);
+      }
     });
   }, [oldValue]);
 
+  if (initialValue === null) return null;
+
   return (
     <View style={styles.container}>
-      <Text style={styles.value}>{value}</Text>
+      <Text style={styles.value}>{displayValue}</Text>
       <SliderNative
+        key={`slider-${initialValue}`}
         minimumValue={min}
         maximumValue={max}
         step={step}
-        value={value} 
-        onValueChange={(v: number) => {
-          setValue(v);
+        value={initialValue}
+        onValueChange={(v) => {
+          setDisplayValue(v);
         }}
-        onSlidingComplete={(v: number) => {
+        onSlidingComplete={(v) => {
           onValueChange(v);
         }}
         minimumTrackTintColor="#d9a1ff"
@@ -48,16 +55,15 @@ export default function Slider({
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
-    rowGap: 6,
+    width: '100%',
   },
   value: {
-    color: "#ffffff",
+    color: "#000000",
     fontSize: 14,
     fontWeight: "500",
     alignSelf: "flex-end",
-
+    marginBottom: 6,
   }
 });
