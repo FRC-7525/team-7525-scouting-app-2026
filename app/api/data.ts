@@ -1,4 +1,16 @@
-import { AUTO_CLIMB_TYPE, TELEOP_CLIMB_TYPE, DRIVER_STATION, GamePhase, MatchData, START_POSITION, Tag, CrossLineTag, IntakeLocationTag, CapabilityTag, ErrorTag } from "./data_types";
+import {
+    MatchData,
+    OffenseRobotData,
+    DefenseRobotData,
+    START_POSITION,
+    CrossLineTag,
+    IntakeLocationTag,
+    CapabilityTag,
+    ErrorTag,
+    SCOUTING_ROLE,
+    AllianceColor,
+    RobotSlot,
+} from "./data_types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function getMatchData(): Promise<MatchData> {
@@ -12,7 +24,7 @@ export function getMatchData(): Promise<MatchData> {
                     resolve(new MatchData());
                 }
             }).catch((err) => reject(err));
-    })
+    });
 }
 
 export function saveMatchData(data: MatchData): Promise<void> {
@@ -25,92 +37,146 @@ export function deleteMatchData(): Promise<void> {
 
 function modifyMatchData(modifier: (data: MatchData) => MatchData): Promise<void> {
     return new Promise((resolve, reject) => {
-        getMatchData().then((data) => {
-            resolve(saveMatchData(modifier(data)));
-        }).catch((err) => reject(err));
+        getMatchData()
+            .then((data) => resolve(saveMatchData(modifier(data))))
+            .catch((err) => reject(err));
     });
+}
+
+function getOffenseSlot(data: MatchData, slot: RobotSlot): OffenseRobotData {
+    const robot = data[slot];
+    if ((robot as OffenseRobotData).type !== "offense") {
+        throw new Error(`Slot ${slot} is not OffenseRobotData`);
+    }
+    return robot as OffenseRobotData;
+}
+
+function getDefenseSlot(data: MatchData, slot: RobotSlot): DefenseRobotData {
+    const robot = data[slot];
+    if ((robot as DefenseRobotData).type !== "defense") {
+        throw new Error(`Slot ${slot} is not DefenseRobotData`);
+    }
+    return robot as DefenseRobotData;
 }
 
 export function updateName(name: string): Promise<void> {
-    return modifyMatchData((data) => {
-        data["scouterName"] = name;
-        return data;
-    });
+    return modifyMatchData((data) => { data.scouterName = name; return data; });
 }
 
 export function updateMatchNumber(matchNumber: number): Promise<void> {
+    return modifyMatchData((data) => { data.matchNumber = matchNumber; return data; });
+}
+
+export function updateScoutingRole(role: SCOUTING_ROLE): Promise<void> {
     return modifyMatchData((data) => {
-        data["matchNumber"] = matchNumber;
+        data.scoutingRole = role;
+        data.alliance = role.includes("Red") ? "Red" : "Blue";
+
+        const isOffense = role === SCOUTING_ROLE.OFFENSE_RED || role === SCOUTING_ROLE.OFFENSE_BLUE;
+
+        (["robotOne", "robotTwo", "robotThree"] as const).forEach((slot) => {
+            const existing = data[slot];
+            const fresh = isOffense ? new OffenseRobotData() : new DefenseRobotData();
+            fresh.robotNumber       = existing.robotNumber;
+            fresh.driverCitrusScale = existing.driverCitrusScale;
+            fresh.notes             = existing.notes;
+            data[slot] = fresh;
+        });
+
         return data;
     });
 }
 
-export function updateTeamNumber(teamNumber: number): Promise<void> {
+export function updateAlliance(alliance: AllianceColor): Promise<void> {
+    return modifyMatchData((data) => { data.alliance = alliance; return data; });
+}
+
+export function updateMatchNotes(notes: string): Promise<void> {
+    return modifyMatchData((data) => { data.notes = notes; return data; });
+}
+
+export function updateAppUpdate(updated: boolean): Promise<void> {
+    return modifyMatchData((data) => { data.appUpdated = updated; return data; });
+}
+
+export function updateAllRobotNumbers(r1: number, r2: number, r3: number): Promise<void> {
     return modifyMatchData((data) => {
-        data["teamNumber"] = teamNumber;
+        data.robotOne.robotNumber   = r1;
+        data.robotTwo.robotNumber   = r2;
+        data.robotThree.robotNumber = r3;
         return data;
     });
 }
 
-export function updateDriverStation(station: DRIVER_STATION): Promise<void> {
+export function updateRobotNumber(slot: RobotSlot, num: number): Promise<void> {
+    return modifyMatchData((data) => { data[slot].robotNumber = num; return data; });
+}
+
+export function updateDriverCitrusScale(slot: RobotSlot, scale: number): Promise<void> {
+    return modifyMatchData((data) => { data[slot].driverCitrusScale = scale; return data; });
+}
+
+export function updateRobotNotes(slot: RobotSlot, notes: string): Promise<void> {
+    return modifyMatchData((data) => { data[slot].notes = notes; return data; });
+}
+
+export function updateStartPosition(slot: RobotSlot, position: START_POSITION): Promise<void> {
     return modifyMatchData((data) => {
-        data["driverStation"] = station;
+        getOffenseSlot(data, slot).startPosition = position;
         return data;
     });
 }
 
-// export function updateBallCount(phase: GamePhase, ballCount: number): Promise<void> {
-//     return modifyMatchData((data) => {
-//         data[phase].ballCount = ballCount;
-//         return data;
-//     });
-// }
-
-export function updateDriverCitrusScale(scale: number): Promise<void> {
+export function updateIntakeTag(slot: RobotSlot, tag: IntakeLocationTag, remove?: boolean): Promise<void> {
     return modifyMatchData((data) => {
-        data["teleop"]["driverCitrusScale"] = scale;
+        const robot = getOffenseSlot(data, slot);
+        const tags = new Set(robot.intakeTags);
+        remove ? tags.delete(tag) : tags.add(tag);
+        robot.intakeTags = [...tags];
         return data;
     });
 }
 
-export function updateDefenseAbility(ability: number): Promise<void> {
+export function updateCrossLineTag(slot: RobotSlot, tag: CrossLineTag, remove?: boolean): Promise<void> {
     return modifyMatchData((data) => {
-        data["teleop"]["defenseAbility"] = ability;
+        const robot = getOffenseSlot(data, slot);
+        const tags = new Set(robot.crossLineTags);
+        remove ? tags.delete(tag) : tags.add(tag);
+        robot.crossLineTags = [...tags];
         return data;
     });
 }
 
-export function updateLeftStart(leftStart: boolean): Promise<void> {
+export function updateCapabilityTag(slot: RobotSlot, tag: CapabilityTag, remove?: boolean): Promise<void> {
     return modifyMatchData((data) => {
-        data["autonomous"]["leftStart"] = leftStart;
+        const robot = getOffenseSlot(data, slot);
+        const tags = new Set(robot.capabilityTags);
+        remove ? tags.delete(tag) : tags.add(tag);
+        robot.capabilityTags = [...tags];
         return data;
     });
 }
 
-export function updateStartPosition(position: START_POSITION): Promise<void> {
+export function updateDefenseCitrusScale(slot: RobotSlot, scale: number): Promise<void> {
     return modifyMatchData((data) => {
-        data["autonomous"]["startPosition"] = position;
+        getDefenseSlot(data, slot).defenseCitrusScale = scale;
         return data;
     });
 }
 
-export function updateAutoClimb(climbType: AUTO_CLIMB_TYPE): Promise<void> {
+export function updateRobotWeight(slot: RobotSlot, weight: number): Promise<void> {
     return modifyMatchData((data) => {
-        data["autonomous"]["climb"] = climbType;
+        getDefenseSlot(data, slot).robotWeight = weight;
         return data;
     });
 }
 
-export function updateTeleopClimb(climbType: TELEOP_CLIMB_TYPE): Promise<void> {
+export function updateErrorTag(slot: RobotSlot, tag: ErrorTag, remove?: boolean): Promise<void> {
     return modifyMatchData((data) => {
-        data["teleop"]["climb"] = climbType;
-        return data;
-    });
-}
-
-export function updateNotes(notes: string): Promise<void> {
-    return modifyMatchData((data) => {
-        data["notes"] = notes;
+        const robot = getDefenseSlot(data, slot);
+        const tags = new Set(robot.errorTags);
+        remove ? tags.delete(tag) : tags.add(tag);
+        robot.errorTags = [...tags];
         return data;
     });
 }
@@ -119,85 +185,14 @@ export function addUnsyncedData(data: MatchData): Promise<void> {
     return new Promise((resolve, reject) => {
         AsyncStorage.getItem("unsynced")
             .then((res) => {
-                const unsynced = new Set(JSON.parse(res ?? "[]"));
-                unsynced.add(data);
-                resolve(AsyncStorage.setItem("unsynced", JSON.stringify([ ...unsynced ])));
+                const unsynced: MatchData[] = JSON.parse(res ?? "[]");
+                const isDuplicate = unsynced.some(
+                    (entry) =>
+                        entry.matchNumber === data.matchNumber &&
+                        entry.scoutingRole === data.scoutingRole
+                );
+                if (!isDuplicate) unsynced.push(data);
+                resolve(AsyncStorage.setItem("unsynced", JSON.stringify(unsynced)));
             }).catch((err) => reject(`Failed to save unsynced match data: ${err}`));
-    })
-}
-
-export function updateErrorTag(tag: ErrorTag, remove?: boolean): Promise<void> {
-    return modifyMatchData((data) => {
-        const tags = new Set(data.errorTags);
-
-        if (remove) tags.delete(tag);
-        else tags.add(tag);
-
-        data.errorTags = [...tags];
-        return data;
     });
-}
-
-export function updateCrossLineTag(tag: CrossLineTag, remove?: boolean, phase: GamePhase = "autonomous"): Promise<void> {
-    return modifyMatchData((data) => {
-        const tags = new Set(data[phase].crossLineTags);
-
-        if (remove) tags.delete(tag);
-        else tags.add(tag);
-
-        data[phase].crossLineTags = [...tags];
-        return data;
-    });
-}
-
-export function updateIntakeLocationTag(tag: IntakeLocationTag, remove?: boolean, phase: GamePhase = "autonomous"): Promise<void> {
-    return modifyMatchData((data) => {
-        const tags = new Set(data[phase].intakeTags);
-
-        if (remove) tags.delete(tag);
-        else tags.add(tag);
-
-        data[phase].intakeTags = [...tags];
-        return data;
-    });
-}
-
-export function updateCapabilityTag(tag: CapabilityTag, remove?: boolean): Promise<void> {
-    return modifyMatchData((data) => {
-        const tags = new Set(data.capabilityTags);
-
-        if (remove) tags.delete(tag);
-        else tags.add(tag);
-
-        data.capabilityTags = [...tags];
-        return data;
-    });
-}
-
-export function updateDefenseTime(time: number): Promise<void> {
-    return modifyMatchData((data) => {
-        data["teleop"]["defenseTime"] = time;
-        return data;
-    });
-}
-
-export function updateAutoShuttlingTime(phase: GamePhase, time: number): Promise<void> {
-    return modifyMatchData((data) => {
-        data["autonomous"]["AutoshuttlingTime"] = time;
-        return data;
-    });
-}
-
-export function updateTeleopShuttlingTime(phase: GamePhase, time: number): Promise<void> {
-    return modifyMatchData((data) => {
-        data["teleop"]["TeleopshuttlingTime"] = time;
-        return data;
-    });
-}
-
-export function updateAppUpdate(updated: boolean): Promise<void> {
-    return modifyMatchData((data) => {
-        data["appUpdated"] = updated;
-        return data;
-    })
 }
