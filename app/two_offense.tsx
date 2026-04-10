@@ -9,6 +9,7 @@ import { updateCapabilityTag, updateRobotNotes, getMatchData } from './api/data'
 import { OffenseRobotData } from './api/data_types';
 import IntakeLocationsView from './views/IntakeLocationsView';
 import LabeledTextInput from './components/LabeledTextInput';
+import AutoStartPositionView from './views/AutoStartPositionView';
 
 const { width } = Dimensions.get("window");
 
@@ -17,6 +18,7 @@ export default function App() {
         <View style={styles.container} onTouchStart={Keyboard.dismiss}>
             <PageHeader title='Robot 2' pageNumber='2/4' previous='one_offense' slot='robotTwo'/>
             <ScrollView>
+                <AutoStartPositionView slot="robotTwo" />
                 <IntakeLocationsView slot="robotTwo" />
                 <Divider />
                 <SuperScoutView slot="robotTwo" />
