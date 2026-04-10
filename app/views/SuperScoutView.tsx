@@ -1,19 +1,18 @@
-import { View, StyleSheet, Text } from "react-native";
-import { useEffect, useState } from "react";
-import MathBlock from "../components/MathBlock";
+import { View, StyleSheet } from "react-native";
 import SectionTitle from "../components/SectionTitle";
 import Slider from "../components/Slider";
-import { getMatchData, updateDefenseAbility, updateDriverCitrusScale} from "../api/data";
-import { GamePhase } from "../api/data_types";
+import { getMatchData, updateDriverCitrusScale } from "../api/data";
+import { RobotSlot } from "../api/data_types";
 
+type Props = {
+    slot: RobotSlot;
+};
 
-function SuperScoutView() {
+function SuperScoutView({ slot }: Props) {
     return (
         <View style={styles.container}>
-            <SectionTitle>Rank Drivers (1=best)</SectionTitle>
-            <Slider min={1} max={3} step={1} onValueChange={(val) => updateDriverCitrusScale(val)} oldValue={getMatchData().then((data) => data["teleop"].driverCitrusScale)}/>
-            <SectionTitle>Defense Ability (1=best)</SectionTitle>
-            <Slider min={1} max={3} step={1} onValueChange={(val) => updateDefenseAbility(val)} oldValue={getMatchData().then((data) => data["teleop"].defenseAbility)}/>
+            <SectionTitle>Driver Rating (1=best)</SectionTitle>
+            <Slider min={1} max={3} step={1} onValueChange={(val) => updateDriverCitrusScale(slot, val)} oldValue={getMatchData().then((data) => data[slot].driverCitrusScale)} />
         </View>
     );
 }
@@ -24,11 +23,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         gap: 8,
     },
-    text: {
-        color: "#000000",
-        fontSize: 15,
-        fontWeight: "500",
-    }
 });
 
 export default SuperScoutView;
