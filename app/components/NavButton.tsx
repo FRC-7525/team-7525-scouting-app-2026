@@ -21,7 +21,7 @@ function NavButton({ text, pageName, disabled, onClick }: NavButtonProps) {
         <View style={[{ flexDirection: 'row-reverse', marginTop: 10 }]}>
             <Link href={"/" + pageName} asChild>
                 <Button textColor={TEXT_COLOR} buttonColor={BACKGROUND_COLOR} mode="contained"
-                    contentStyle={{ height: 85, width: 85 }} onPress={onClick} disabled={disabled}>{text}</Button>
+                    contentStyle={{ height: 85, width: 140 }} onPress={onClick} disabled={disabled}>{text}</Button>
             </Link>
         </View>
     )

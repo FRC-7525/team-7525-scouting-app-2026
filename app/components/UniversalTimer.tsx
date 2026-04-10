@@ -6,41 +6,48 @@ interface UniversalTimerProps {
   initialTime?: number;
   onStop?: (finalTime: number) => void;
   tickMs?: number;
+  isRunning: boolean;
+  setIsRunning: (running: boolean) => void;
 }
 
 function UniversalTimer({
   initialTime = 0,
   onStop,
   tickMs = 10,
+  isRunning,
+  setIsRunning,
 }: UniversalTimerProps) {
   const [time, setTime] = useState(initialTime);
-  const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     setTime(initialTime);
   }, [initialTime]);
 
-  const startStop = () => {
+  useEffect(() => {
     if (isRunning) {
+      intervalRef.current = setInterval(() => {
+        setTime((t) => t + tickMs);
+      }, tickMs);
+    } else {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
-      setIsRunning(false);
       onStop?.(time);
-    } else {
-      intervalRef.current = setInterval(() => {
-        setTime((t) => t + tickMs);
-      }, tickMs);
-      setIsRunning(true);
     }
-  };
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [isRunning]);
 
   const reset = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    setTime(0);
     setIsRunning(false);
+    setTime(0);
   };
 
   const formatTime = (ms: number) => {
@@ -56,7 +63,7 @@ function UniversalTimer({
     <View style={styles.container}>
       <Text style={styles.time}>{formatTime(time)}</Text>
       <View style={styles.buttons}>
-        <Button mode="contained" onPress={startStop}>
+        <Button mode="contained" onPress={() => setIsRunning(!isRunning)}>
           {isRunning ? "Stop" : "Start"}
         </Button>
         <Button mode="outlined" onPress={reset}>

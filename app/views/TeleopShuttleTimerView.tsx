@@ -1,15 +1,15 @@
-// import { getMatchData, updateAutoShuttlingTime } from "../api/data";
+// import { getMatchData, updateTeleopShuttlingTime } from "../api/data";
 // import { View, StyleSheet } from "react-native";
 // import SectionTitle from "../components/SectionTitle";
 // import UniversalTimer from "../components/UniversalTimer";
 // import { useEffect, useState } from "react";
 
-// interface AutoShuttleTimerViewProps {
+// interface TeleopShuttleTimerViewProps {
 //   isRunning: boolean;
 //   setIsRunning: (running: boolean) => void;
 // }
 
-// function AutoShuttleTimerView({ isRunning, setIsRunning }: AutoShuttleTimerViewProps) {
+// function TeleopShuttleTimerView({ isRunning, setIsRunning }: TeleopShuttleTimerViewProps) {
 //   const [initialTime, setInitialTime] = useState(0);
 //   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -17,7 +17,7 @@
 //     let isMounted = true;
 //     const loadData = async () => {
 //       const data = await getMatchData();
-//       const savedTime = data["autonomous"]?.AutoshuttlingTime ?? 0;
+//       const savedTime = data["teleop"]?.TeleopshuttlingTime ?? 0;
       
 //       if (isMounted) {
 //         setInitialTime(savedTime);
@@ -37,7 +37,7 @@
 //           isRunning={isRunning}
 //           setIsRunning={setIsRunning}
 //           onStop={(finalTime) => {
-//             updateAutoShuttlingTime("autonomous", finalTime);
+//             updateTeleopShuttlingTime("teleop", finalTime);
 //           }}
 //         />
 //       )}
@@ -51,4 +51,4 @@
 //   },
 // });
 
-// export default AutoShuttleTimerView;
+// export default TeleopShuttleTimerView;
