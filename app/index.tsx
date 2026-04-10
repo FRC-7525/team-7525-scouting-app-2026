@@ -33,26 +33,26 @@ export default function App() {
             const unsyncedList = JSON.parse(res ?? "[]") as MatchData[];
             setUnsyncedMatches(unsyncedList.length);
 
-            onValue(ref(db, "eventCode"), (code) => {
-                setEventCode(code.val());
+            const codeSnap = await get(ref(db, "eventCode"));
+            if (!codeSnap.exists()) return;
+            const code = codeSnap.val();
+            setEventCode(code);
 
-                if (unsyncedList.length === 0) return;
+            if (unsyncedList.length === 0) return;
 
-                const updates: { [key: string]: MatchData } = {};
-                unsyncedList.forEach((data) => {
-                    const path = `${code.val()}/${data.matchNumber}/${data.scouterName}`;
-                    FileSystem.writeAsStringAsync(
-                        (FileSystem.documentDirectory ?? "") + path.replaceAll("/", "_"),
-                        JSON.stringify(data)
-                    ).catch((err) => console.error(`Failed to write match: ${err}`));
-                    updates[path] = data;
-                });
-
-                update(ref(db), updates).then(() => {
-                    AsyncStorage.setItem("unsynced", "[]");
-                    setUnsyncedMatches(0);
-                });
+            const updates: { [key: string]: MatchData } = {};
+            unsyncedList.forEach((data) => {
+                const path = `${code}/${data.matchNumber}/${data.scouterName}`;
+                FileSystem.writeAsStringAsync(
+                    (FileSystem.documentDirectory ?? "") + path.replaceAll("/", "_"),
+                    JSON.stringify(data)
+                ).catch((err) => console.error(`Failed to write match: ${err}`));
+                updates[path] = data;
             });
+
+            await update(ref(db), updates);
+            AsyncStorage.setItem("unsynced", "[]");
+            setUnsyncedMatches(0);
         });
     };
 
@@ -99,12 +99,14 @@ export default function App() {
             setAppUpdated(appSha === snap.val());
         });
 
-        onValue(ref(db, "scoutingEnabled"), (snap) => {
+        const unsubScoutingEnabled = onValue(ref(db, "scoutingEnabled"), (snap) => {
             if (!snap.exists()) return;
             setScoutingDisabled(!snap.val());
         });
 
         sync();
+
+        return () => unsubScoutingEnabled();
     }, []);
 
     useEffect(() => {
@@ -163,8 +165,6 @@ export default function App() {
                     ]}
                     onSelect={(selected: string) => {
                         const role = selected as SCOUTING_ROLE;
-                        // Wait for role + slot reinitialization to complete before
-                        // looking up robots, so robot numbers aren't wiped afterward
                         updateScoutingRole(role).then(() => {
                             setScoutingRole(role);
                             lookupRobots(role, matchNumber, eventCode);
