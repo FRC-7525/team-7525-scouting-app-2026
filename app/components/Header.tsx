@@ -3,50 +3,53 @@ import { Appbar, Chip, Divider } from "react-native-paper";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { getMatchData } from "../api/data";
+import { RobotSlot } from "../api/data_types";
 import { BACKGROUND_COLOR, TEXT_COLOR } from "../consts";
 
 interface PageHeaderProps {
     title: string;
-    pageNumber: string;
+    pageNumber?: string;
     previous?: string;
-    showTeam?: boolean;
+    slot?: RobotSlot;
 }
 
-function PageHeader({ title, pageNumber, previous, showTeam }: PageHeaderProps) {
-    showTeam ??= true;
-    const [ teamNumber, setTeamNumber ] = useState("");
-    const [ chipColor, setChipColor ] = useState(BACKGROUND_COLOR);
+function PageHeader({ title, pageNumber, previous, slot }: PageHeaderProps) {
+    const [robotNumber, setRobotNumber] = useState<string>("");
+    const [chipColor, setChipColor]     = useState(BACKGROUND_COLOR);
 
     useEffect(() => {
         getMatchData().then((data) => {
-            if (data["teamNumber"] !== 0) {
-                setTeamNumber(data["teamNumber"].toString());
-            }
-
-            if (data["driverStation"].includes("Red")) {
+            if (data.alliance === "Red") {
                 setChipColor("#f54242");
             } else {
                 setChipColor("#2149a6");
             }
+
+            if (slot && data[slot].robotNumber !== 0) {
+                setRobotNumber(data[slot].robotNumber.toString());
+            }
         });
-    }, []);
+    }, [slot]);
 
     return (
         <View>
             <Appbar.Header>
-                { previous !== undefined && <Link href={previous} asChild>
-                    <Appbar.BackAction />
-                </Link> }
+                { previous !== undefined &&
+                    <Link href={previous} asChild>
+                        <Appbar.BackAction />
+                    </Link> }
                 <Appbar.Content title={`${title} (${pageNumber})`} />
-                { showTeam && <Appbar.Content style={{alignItems: "center"}} title={
-                    <Chip style={{ backgroundColor: chipColor }} textStyle={{ color: TEXT_COLOR }}>
-                        {teamNumber}
-                    </Chip> }
-                /> }
+                { slot !== undefined &&
+                    <Appbar.Content style={{ alignItems: "center" }} title={
+                        <Chip style={{ backgroundColor: chipColor }} textStyle={{ color: TEXT_COLOR }}>
+                            {robotNumber || "—"}
+                        </Chip>
+                    } />
+                }
             </Appbar.Header>
             <Divider />
         </View>
-    )
+    );
 }
 
 export default PageHeader;
