@@ -108,6 +108,24 @@ export function updateAllRobotNumbers(r1: number, r2: number, r3: number): Promi
     });
 }
 
+export function updateIntakeTag(slot: RobotSlot, tag: IntakeLocationTag, remove?: boolean): Promise<void> {
+    return modifyMatchData((data) => {
+        const tags = new Set(data[slot].intakeTags);
+        remove ? tags.delete(tag) : tags.add(tag);
+        data[slot].intakeTags = [...tags];
+        return data;
+    });
+}
+
+export function updateCrossLineTag(slot: RobotSlot, tag: CrossLineTag, remove?: boolean): Promise<void> {
+    return modifyMatchData((data) => {
+        const tags = new Set(data[slot].crossLineTags);
+        remove ? tags.delete(tag) : tags.add(tag);
+        data[slot].crossLineTags = [...tags];
+        return data;
+    });
+}
+
 export function updateRobotNumber(slot: RobotSlot, num: number): Promise<void> {
     return modifyMatchData((data) => { data[slot].robotNumber = num; return data; });
 }
@@ -123,26 +141,6 @@ export function updateRobotNotes(slot: RobotSlot, notes: string): Promise<void> 
 export function updateStartPosition(slot: RobotSlot, position: START_POSITION): Promise<void> {
     return modifyMatchData((data) => {
         getOffenseSlot(data, slot).startPosition = position;
-        return data;
-    });
-}
-
-export function updateIntakeTag(slot: RobotSlot, tag: IntakeLocationTag, remove?: boolean): Promise<void> {
-    return modifyMatchData((data) => {
-        const robot = getOffenseSlot(data, slot);
-        const tags = new Set(robot.intakeTags);
-        remove ? tags.delete(tag) : tags.add(tag);
-        robot.intakeTags = [...tags];
-        return data;
-    });
-}
-
-export function updateCrossLineTag(slot: RobotSlot, tag: CrossLineTag, remove?: boolean): Promise<void> {
-    return modifyMatchData((data) => {
-        const robot = getOffenseSlot(data, slot);
-        const tags = new Set(robot.crossLineTags);
-        remove ? tags.delete(tag) : tags.add(tag);
-        robot.crossLineTags = [...tags];
         return data;
     });
 }

@@ -4,7 +4,7 @@ import { View, StyleSheet } from "react-native";
 import { Divider } from "react-native-paper";
 import SectionTitle from "../components/SectionTitle";
 import Checkbox from "../components/Checkbox";
-import { MatchData, OffenseRobotData, RobotSlot } from "../api/data_types";
+import { MatchData, RobotSlot } from "../api/data_types";
 
 interface IntakeLocationsViewProps {
     slot: RobotSlot;
@@ -15,27 +15,24 @@ function IntakeLocationsView({ slot }: IntakeLocationsViewProps) {
 
     useEffect(() => {
         getMatchData().then((data) => {
-            const robot = data[slot];
-            if ((robot as OffenseRobotData).type === "offense") {
-                setCenterZoneChecked((robot as OffenseRobotData).intakeTags.includes("Center zone"));
-            }
+            setCenterZoneChecked(data[slot].intakeTags.includes("Center zone"));
         });
     }, [slot]);
 
     return (
         <View style={styles.container}>
-            <SectionTitle>Intook From:</SectionTitle>
+            <SectionTitle>Intook From: During Auto</SectionTitle>
             <Checkbox
                 label="Outpost"
-                getChecked={(data: MatchData) => (data[slot] as OffenseRobotData).intakeTags.includes("Outpost")}
+                getChecked={(data: MatchData) => data[slot].intakeTags.includes("Outpost")}
                 update={(remove: boolean) => updateIntakeTag(slot, "Outpost", remove)} />
             <Checkbox
                 label="Depot"
-                getChecked={(data: MatchData) => (data[slot] as OffenseRobotData).intakeTags.includes("Depot")}
+                getChecked={(data: MatchData) => data[slot].intakeTags.includes("Depot")}
                 update={(remove: boolean) => updateIntakeTag(slot, "Depot", remove)} />
             <Checkbox
                 label="Center Zone"
-                getChecked={(data: MatchData) => (data[slot] as OffenseRobotData).intakeTags.includes("Center zone")}
+                getChecked={(data: MatchData) => data[slot].intakeTags.includes("Center zone")}
                 update={(remove: boolean) => {
                     setCenterZoneChecked(!remove);
                     if (!remove) {
@@ -54,11 +51,11 @@ function IntakeLocationsView({ slot }: IntakeLocationsViewProps) {
                 <SectionTitle>Reached Center Zone Via:</SectionTitle>
                 <Checkbox
                     label="BUMP"
-                    getChecked={(data: MatchData) => (data[slot] as OffenseRobotData).crossLineTags.includes("BUMP")}
+                    getChecked={(data: MatchData) => data[slot].crossLineTags.includes("BUMP")}
                     update={(remove: boolean) => updateCrossLineTag(slot, "BUMP", remove)} />
                 <Checkbox
                     label="TRENCH"
-                    getChecked={(data: MatchData) => (data[slot] as OffenseRobotData).crossLineTags.includes("TRENCH")}
+                    getChecked={(data: MatchData) => data[slot].crossLineTags.includes("TRENCH")}
                     update={(remove: boolean) => updateCrossLineTag(slot, "TRENCH", remove)} />
             </>)}
         </View>

@@ -10,6 +10,7 @@ import { DefenseRobotData, OffenseRobotData } from './api/data_types';
 import DefenseView from './views/DefenseView';
 import LabeledTextInput from './components/LabeledTextInput';
 import { getMatchData, updateRobotNotes } from './api/data';
+import IntakeLocationsView from './views/IntakeLocationsView';
 
 // export type ErrorTag =
 //     | "Stuck on gamepiece"
@@ -26,6 +27,8 @@ export default function App() {
         <View style={styles.container} onTouchStart={Keyboard.dismiss}>
             <PageHeader title='Robot 2' pageNumber='2/4' previous='one_defense' slot='robotTwo'/>
             <ScrollView>
+                <IntakeLocationsView slot="robotTwo" />
+                <Divider />
                 <SuperScoutView slot="robotTwo" />
                 <Divider />
                 <DefenseView slot="robotTwo" />

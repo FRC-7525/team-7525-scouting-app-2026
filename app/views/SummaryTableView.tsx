@@ -30,6 +30,7 @@ function SummaryTableView({ mode }: SummaryTableViewProps) {
         <DataTable key={slot}>
             <TableHeader titles={[ `Robot ${i + 1}` ]} />
             <TableRow label="Robot Number" data={ getMatchData().then((data) => data[slot].robotNumber.toString()) } />
+            <TableRow label="Intake Locations" data={ getMatchData().then((data) => data[slot].intakeTags.join(", ") || "" )} />
             <TableRow label="Driver Citrus Scale" data={ getMatchData().then((data) => data[slot].driverCitrusScale.toString()) } />
             <TableRow label="Notes" data={ getMatchData().then((data) => data[slot].notes || "") } />
 

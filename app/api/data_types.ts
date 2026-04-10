@@ -17,6 +17,8 @@ export type RobotSlot = "robotOne" | "robotTwo" | "robotThree";
 
 export class RobotData {
     robotNumber: number = 0;
+    crossLineTags: CrossLineTag[] = [];
+    intakeTags: IntakeLocationTag[] = [];
     driverCitrusScale: number = 1;
     notes: string = "";
 }
@@ -24,8 +26,6 @@ export class RobotData {
 export class OffenseRobotData extends RobotData {
     readonly type = "offense" as const;
     startPosition: START_POSITION = START_POSITION.SCORING_TABLE;
-    crossLineTags: CrossLineTag[] = [];
-    intakeTags: IntakeLocationTag[] = [];
     capabilityTags: CapabilityTag[] = [];
 }
 
