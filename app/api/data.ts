@@ -91,10 +91,6 @@ export function updateAlliance(alliance: AllianceColor): Promise<void> {
     return modifyMatchData((data) => { data.alliance = alliance; return data; });
 }
 
-export function updateMatchNotes(notes: string): Promise<void> {
-    return modifyMatchData((data) => { data.notes = notes; return data; });
-}
-
 export function updateAppUpdate(updated: boolean): Promise<void> {
     return modifyMatchData((data) => { data.appUpdated = updated; return data; });
 }

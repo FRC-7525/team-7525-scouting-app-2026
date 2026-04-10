@@ -45,7 +45,7 @@ export class MatchData {
     robotOne: OffenseRobotData | DefenseRobotData = new OffenseRobotData();
     robotTwo: OffenseRobotData | DefenseRobotData = new OffenseRobotData();
     robotThree: OffenseRobotData | DefenseRobotData = new OffenseRobotData();
-    notes: string = "";
+    // notes: string = "";
 }
 
 export type ErrorTag =
